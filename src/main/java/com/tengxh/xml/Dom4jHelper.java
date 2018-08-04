@@ -46,7 +46,8 @@ public class Dom4jHelper {
      *
      * @param document
      */
-    public void treeWalk(Document document) {
+    public void treeWalk(
+            Document document) {
         treeWalk(document.getRootElement());
     }
 
