@@ -9,10 +9,7 @@ import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @ClassName: ExportExcel.java
@@ -23,9 +20,9 @@ import java.util.Map;
  */
 public class ExportExcel {
     //读取Xlsx
-    public static Map<Integer, List<String[]>> readXlsx(String fileName) {
+    public static Map<String, List<String[]>> readXlsx(String fileName) {
 
-        Map<Integer, List<String[]>> map = new HashMap<Integer, List<String[]>>();
+        Map<String, List<String[]>> map = new HashMap<String, List<String[]>>();
         try {
             InputStream is = new FileInputStream(fileName);
             XSSFWorkbook workbook = new XSSFWorkbook(is);
@@ -35,6 +32,7 @@ public class ExportExcel {
             // 循环工作表Sheet
             for (int numSheet = 0; numSheet < workbook.getNumberOfSheets(); numSheet++) {
                 XSSFSheet xssfSheet = workbook.getSheetAt(numSheet);
+                String sheetName = xssfSheet.getSheetName();
                 if (xssfSheet == null) {
                     continue;
                 }
@@ -90,7 +88,7 @@ public class ExportExcel {
                     }
                     list.add(singleRow);
                 }
-                map.put(numSheet, list);
+                map.put(sheetName, list);
             }
         } catch (FileNotFoundException e) {
             // TODO 自动生成的 catch 块
@@ -103,12 +101,12 @@ public class ExportExcel {
     }
 
     //写入Xlsx
-    public static void writeXlsx(String fileName, Map<Integer, List<String[]>> map) {
+    public static void writeXlsx(String fileName, Map<String, List<String[]>> map) {
         try {
             XSSFWorkbook wb = new XSSFWorkbook();
-            for (int sheetnum = 0; sheetnum < map.size(); sheetnum++) {
-                XSSFSheet sheet = wb.createSheet("" + sheetnum);
-                List<String[]> list = map.get(sheetnum);
+            for (Map.Entry<String, List<String[]>> vo : map.entrySet()) {
+                XSSFSheet sheet = wb.createSheet(vo.getKey());
+                List<String[]> list = vo.getValue();
                 for (int i = 0; i < list.size(); i++) {
                     XSSFRow row = sheet.createRow(i);
                     String[] str = list.get(i);
@@ -121,19 +119,25 @@ public class ExportExcel {
             FileOutputStream outputStream = new FileOutputStream(fileName);
             wb.write(outputStream);
             outputStream.close();
-        } catch (FileNotFoundException e) {
+        } catch (
+                FileNotFoundException e)
+
+        {
             // TODO 自动生成的 catch 块
             e.printStackTrace();
-        } catch (IOException e) {
+        } catch (
+                IOException e)
+
+        {
             // TODO 自动生成的 catch 块
             e.printStackTrace();
         }
+
     }
 
     public static void main(String[] args) {
-
         System.out.println("开始读取Excle数据");
-        Map<Integer, List<String[]>> listMap = readXlsx("C:\\Users\\luck_\\Desktop\\1.xlsx");
+        Map<String, List<String[]>> listMap = readXlsx("C:\\Users\\luck_\\Desktop\\1.xlsx");
         if (listMap != null) {
             System.out.println("开始导出Excle数据");
             writeXlsx("C:\\Users\\luck_\\Desktop\\2.xlsx", listMap);
